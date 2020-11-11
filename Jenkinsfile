@@ -14,7 +14,7 @@ volumes: [
                     
                     // Let's clone the source
                     sh """ 
-                      git clone https://github.com/durgaprasad444/${APP_NAME}.git            
+                      git clone https://github.com/dharma345/${APP_NAME}.git            
                       cd ${APP_NAME}
                       cp -rf * /home/jenkins/agent/workspace/java-app/helloworld-cicd
                     """
@@ -33,7 +33,7 @@ volumes: [
             container('slave') {
                 sh """
                 cd /home/jenkins/agent/workspace/java-app/helloworld-cicd
-                docker build -t durgaprasad444/${APP_NAME}-${tag}:$BUILD_NUMBER .
+                docker build -t dharma398/${APP_NAME}-${tag}:$BUILD_NUMBER .
                 """
                 
   
@@ -46,7 +46,7 @@ volumes: [
                 usernameVariable: 'DOCKER_HUB_USER',
                 passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
                  sh "docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}"
-                 sh "docker push durgaprasad444/${APP_NAME}-${tag}:$BUILD_NUMBER"
+                 sh "docker push dharma398/${APP_NAME}-${tag}:$BUILD_NUMBER"
     
     
             }

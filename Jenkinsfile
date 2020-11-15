@@ -12,11 +12,21 @@ volumes: [
             stage("CLONE CODE") {
                 container('slave') {
                     
+  checkout([$class: 'GitSCM',
+        branches: [[name: '*/develop']],
+        doGenerateSubmoduleConfigurations: false,
+        extensions: [],
+        submoduleCfg: [],
+        userRemoteConfigs: [[
+            url: 'https://github.com/dharma345/helloworld-cicd.git'
+    ]]])
+                    
                     // Let's clone the source
+                    
                     sh """ 
-                      git clone https://github.com/dharma345/${APP_NAME}.git            
-                      cd ${APP_NAME}
-                      cp -rf * /home/jenkins/agent/workspace/java-app/helloworld-cicd
+                   
+                      #git clone https://github.com/dharma345/${APP_NAME}.git            
+                      cd /home/jenkins/agent/workspace/helloworld-cicd/dev_pipeline/
                     """
                 }
             }
@@ -32,7 +42,7 @@ volumes: [
         stage('BUILD IMAGE') {
             container('slave') {
                 sh """
-                cd /home/jenkins/agent/workspace/java-app/helloworld-cicd
+                cd /home/jenkins/agent/workspace/helloworld-cicd/dev_pipeline/
                 docker build -t dharma398/${APP_NAME}-${tag}:$BUILD_NUMBER .
                 """
                 
@@ -57,7 +67,7 @@ volumes: [
         
         stage("DEPLOY ON KUBERNETES") {
             container('slave') {
-                sh "cd /home/jenkins/agent/workspace/java-app/helloworld-cicd"
+                sh "cd /home/jenkins/agent/workspace/helloworld-cicd/dev_pipeline/"
                 sh "kubectl apply -f hello-kubernetes.yaml"
                 sh "kubectl set image deployment/hello-kubernetes hello-kubernetes=dharma398/${APP_NAME}-${tag}:$BUILD_NUMBER"
             }
